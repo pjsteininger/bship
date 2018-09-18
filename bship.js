@@ -79,7 +79,9 @@ var newGame = function (name) {
     var cpu = new Player("cpu", new Board(10, 10), boats);
     console.log(player.board);
     console.log("player.boats[1]", player.boats[Object.keys(player.boats)[1]]);
-    placeABoat(player, b);
+    for (boat in player.boats) {
+        placeABoat(player, boat);
+    }
     //TODO: Place cpu boats randomly
     //TODO: inquire where they want to put their ships
     //TODO: while all players or all cpu boats isSunk : false, {playerTurn(); cpuTurn()}
@@ -91,18 +93,23 @@ var placeABoat = function (player, boat) {
     inquirer.prompt([{
         type: "input",
         name: "xcoords",
-        message: "Pick a row a-j for your " + Object.keys(player.boats)[0] + "?",
+        message: "Pick a row a-j for your " + boat.name + "?",
     }, {
         type: "input",
         name: "ycoords",
-        message: "Pick a column 1-10 for your " + Object.keys(player.boats)[1] + "?",
+        message: "Pick a column 1-10 for your " + boat.name + "?",
     }, {
         type: "input",
         name: "orientation",
         message: "Place the ship horizontally (0) or vertically (1)?"
     }]).then(answer => {
         if ((row.includes(answer.xcoords)) && (col.includes(answer.ycoords)) && ((answer.orientation == 1) || answer.orientation == 0)) {
-            console.log(answer)
+            //TODO: place the boat on the board
+            console.log(answer);
+            //placeABoat(player, **nextBoat**)
+        } else {
+            console.log("Please input valid values");
+            placeABoat(player, boat);
         }
 
     });
