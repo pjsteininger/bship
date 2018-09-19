@@ -8,7 +8,7 @@ var rowArr = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
  * *************/
 var Player = function (name, board, boats) {
     this.name = name,
-        this.board = board,
+        this.board = board.board,
         this.boats = boats
 }
 
@@ -67,11 +67,11 @@ var checkSpace = function (board, row, col, boat, orientation) {
         row = rowArr.indexOf(row) + 1;
     }
     if (orientation === "0") {
-        if (col + boat.length > 10) {
+        if (col + boat.length > 11) {
             return false;
         }
     } else {
-        if (row + boat.length > 10) {
+        if (row + boat.length > 11) {
             return false;
         }
     }
@@ -101,9 +101,14 @@ var checkSpace = function (board, row, col, boat, orientation) {
     return true;
 }
 
+var rollCoords = function () {
+    var row = rowArr[Math.floor(Math.random() * 10)];
+    var col = colArr[Math.floor(Math.random() * 10)];
+    var orientation = Math.floor(Math.random() * 2).toString();
+    return { row, col, orientation }
+}
 
-
-var placeShip = function (board, row, col, boat, orientation) {
+var placeBoat = function (board, row, col, boat, orientation) {
     col = colArr.indexOf(col) + 1;
     row = rowArr.indexOf(row) + 1;
     if (orientation === "1") {
@@ -117,14 +122,23 @@ var placeShip = function (board, row, col, boat, orientation) {
     }
 }
 
-var makeGuess = function (board, x, y) {
-    if (board[x][y] === " ") {
-        board[x][y] = " .";
-        return false;
+var cpuBoat = function (cpuBoard, boat, coords) {
+    console.log(coords);
+    if (checkSpace(cpuBoard, coords.row, coords.col, boat, coords.orientation)) {
+        placeBoat(cpuBoard, coords.row, coords.col, boat, coords.orientation);
     } else {
-        board[x][y] = "X";
-        return true;
+        cpuBoat(cpuBoard, boat, rollCoords());
     }
+}
+
+var makeGuess = function (board, x, y) {
+    // if (board[x][y] === " ") {
+    //     board[x][y] = " .";
+    //     return false;
+    // } else {
+    //     board[x][y] = "X";
+    //     return true;
+    // }
 }
 
 var newGame = function (name) {
@@ -137,14 +151,9 @@ var newGame = function (name) {
     ]
     var player = new Player(name, new Board(10, 10), boats);
     var cpu = new Player("cpu", new Board(10, 10), boats);
-    //placeShip(player.board.board, 5, 5, boats[0], 0)
-
-
-    //     checkSpace(player.board.board, "0", "a", boats[0], 0),
-    //     checkSpace(player.board.board, "10", "a", boats[0], 0),
-    //     checkSpace(player.board.board, "10", "a", boats[0], 1)
-    // );
-    // console.log(player.board.board)
+    console.log(rollCoords());
+    boats.forEach(e => cpuBoat(cpu.board, e, rollCoords()));
+    console.log(cpu.board);
     promptBoat(player, boats, 0);
 
 
@@ -169,8 +178,9 @@ var promptBoat = function (player, boats, i) {
             name: "orientation",
             message: "Place the ship horizontally (0) or vertically (1)?"
         }]).then(function (answer) {
-            if (checkSpace(player.board.board, answer.row, answer.col, boats[i], answer.orientation)) {
-                placeShip(player.board.board, answer.row, answer.col, boats[i], answer.orientation);
+            console.log(player.board);
+            if (checkSpace(player.board, answer.row, answer.col, boats[i], answer.orientation)) {
+                placeBoat(player.board, answer.row, answer.col, boats[i], answer.orientation);
                 i++;
                 promptBoat(player, boats, i);
             } else {
@@ -180,7 +190,7 @@ var promptBoat = function (player, boats, i) {
         });
     } else {
         console.log(player.board);
-        
+
     }
 }
 
@@ -205,7 +215,7 @@ var continueGame = function () {
 }
 
 
-// placeShip(philBoard.board, 5, 5, aircraftCarrier, 1);
+// placeBoat(philBoard.board, 5, 5, aircraftCarrier, 1);
 // console.log(philBoard);
 
 
