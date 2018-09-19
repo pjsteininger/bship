@@ -1,0 +1,23 @@
+{
+  "name": "bship",
+  "version": "1.0.0",
+  "description": "battleship",
+  "main": "bship.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pjsteininger/bship.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pjsteininger/bship/issues"
+  },
+  "homepage": "https://github.com/pjsteininger/bship#readme",
+  "dependencies": {
+    "inquirer": "^6.2.0"
+  }
+}
