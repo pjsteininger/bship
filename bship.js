@@ -1,17 +1,30 @@
 const inquirer = require("inquirer");
 var colArr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 var rowArr = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-/****************
- *              *
- * CONSTRUCTORS *
- *              *
- * *************/
+//***************
+//              *
+// CONSTRUCTORS *
+//              *
+//***************/
+
+
+/**
+ * @description Creates a new player with name, board, and boats
+ * @param {string} name 
+ * @param {object} board 
+ * @param {array} boats 
+ */
 var Player = function (name, board, boats) {
     this.name = name,
         this.board = board.board,
         this.boats = boats
 }
 
+/**
+ * 
+ * @param {number} rows 
+ * @param {number} cols 
+ */
 var Board = function (rows, cols) {
     this.board = [];
     for (var row = 1; row <= rows; row++) {
@@ -30,19 +43,11 @@ var Boat = function (length, name, abbr, orientation, coords) {
     this.length = length;
     this.name = name;
     this.abbr = abbr;
-    if (orientation) {
-        this.orientation = orientation;
-    } else {
-        this.orientation = "0";
-    }
-    if (coords) {
-        this.coords = coords;
-    } else {
-        this.coords = {
-            row: null,
-            col: null
-        };
-    }
+    this.orientation = orientation || "0";
+    this.coords = coords || {
+        row: null,
+        col: null
+    };
     this.isSunk = false;
 
 }
@@ -131,14 +136,18 @@ var cpuBoat = function (cpuBoard, boat, coords) {
     }
 }
 
-var makeGuess = function (board, x, y) {
-    // if (board[x][y] === " ") {
-    //     board[x][y] = " .";
-    //     return false;
-    // } else {
-    //     board[x][y] = "X";
-    //     return true;
-    // }
+var makeGuess = function (row, col, board, displayBoard) {
+    row = rowArr.indexOf(row) + 1;
+    col = colArr.indexOf(col) + 1;
+    if (board[row][col].trim() === "") {
+        displayBoard[row][col] = " M";
+        return false;
+    } else if (board[row][col] === " M") {
+        console.log("Already guessed that one.");
+    } else {
+        displayBoard[row][col] = " X";
+        return true;
+    }
 }
 
 var newGame = function (name) {
@@ -154,7 +163,11 @@ var newGame = function (name) {
     console.log(rollCoords());
     boats.forEach(e => cpuBoat(cpu.board, e, rollCoords()));
     console.log(cpu.board);
-    promptBoat(player, boats, 0);
+    var players = {
+        player: player,
+        cpu: cpu
+    }
+    promptBoat(players, boats, 0);
 
 
     //TODO: Place cpu boats randomly
@@ -162,9 +175,9 @@ var newGame = function (name) {
     //TODO: while all players or all cpu boats isSunk : false, {playerTurn(); cpuTurn()}
 }
 
-var promptBoat = function (player, boats, i) {
+var promptBoat = function (players, boats, i) {
     if (i < boats.length) {
-        console.log(player.board);
+        console.log(players.player.board);
         inquirer.prompt([{
             type: "input",
             name: "row",
@@ -178,23 +191,43 @@ var promptBoat = function (player, boats, i) {
             name: "orientation",
             message: "Place the ship horizontally (0) or vertically (1)?"
         }]).then(function (answer) {
-            console.log(player.board);
-            if (checkSpace(player.board, answer.row, answer.col, boats[i], answer.orientation)) {
-                placeBoat(player.board, answer.row, answer.col, boats[i], answer.orientation);
+            console.log(players.player.board);
+            if (checkSpace(players.player.board, answer.row, answer.col, boats[i], answer.orientation)) {
+                placeBoat(players.player.board, answer.row, answer.col, boats[i], answer.orientation);
                 i++;
-                promptBoat(player, boats, i);
+                promptBoat(players, boats, i);
             } else {
                 console.log("Please input valid values");
-                promptBoat(player, boats, i);
+                promptBoat(players, boats, i);
             }
         });
     } else {
-        console.log(player.board);
-
+        console.log(players.player.board);
+        playGame(players);
     }
 }
 
-var playerTurn = function () {
+var playGame = function (players) {
+    var cpuDisplayBoard = new Board(10, 10);
+    cpuDisplayBoard = cpuDisplayBoard.board;
+    playerTurn(players, cpuDisplayBoard);
+    //cpuTurn(players.player.board);
+}
+
+var playerTurn = function (players, board) {
+    console.log(board);
+    inquirer.prompt([{
+        type: "input",
+        name: "coords",
+        message: "Fire at a coordinate (a-j)(1-10) e.g. b5"
+    }]).then(function (answer) {
+        var row = answer.coords.charAt(0);
+        var col = answer.coords.charAt(1);
+        if (rowArr.includes(row) && colArr.includes(col)) {
+            makeGuess(row, col, players.cpu.board, board);
+            playerTurn(players, board);
+        }
+    });
     //TODO: inquire move
     //TODO: record move on cpu gameboard
     //TODO: show cpu gameboard
@@ -230,3 +263,5 @@ inquirer.prompt([{
     name: "response",
     message: "What is your name?"
 }]).then(answer => newGame(answer.response));
+
+
