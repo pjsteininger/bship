@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
-var colArr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+const colors = require("colors");
+var colArr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 var rowArr = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 //***************
 //              *
@@ -52,11 +53,11 @@ var Boat = function (length, name, abbr, orientation, coords) {
 
 }
 
-/********************
- *                  *
- *  GAME FUNCTIONS  *
- *                  *
- * *****************/
+// ********************
+// *                  *
+// *  GAME FUNCTIONS  *
+// *                  *
+// ********************
 var checkSpace = function (board, row, col, boat, orientation) {
     if ((orientation !== "1") && (orientation !== "0")) {
         return false;
@@ -257,7 +258,7 @@ var continueGame = function () {
 // console.log(philBoard);
 
 //var board = Array(cols).fill(new Array(rows).fill(0));
-
+console.log("something".green);
 inquirer.prompt([{
     type: "input",
     name: "response",
