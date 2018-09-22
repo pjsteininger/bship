@@ -2,11 +2,7 @@ const inquirer = require("inquirer");
 //const colors = require("colors");
 var colArr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 var rowArr = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-//***************
-//              *
-// CONSTRUCTORS *
-//              *
-//***************/
+
 
 
 var coordToIndex = function(coord) {
