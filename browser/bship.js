@@ -6,7 +6,7 @@
  */
 function appendMultiple(appThis, appTo, num) {
     for (var i = 0; i < num; i++) {
-        appThis.append(appTo.clone());
+        appTo.append(appThis.clone());
     }
 }
 /**
@@ -39,10 +39,10 @@ function generateBoard(rows, cols) {
     var rowLabelSquare = square.clone().addClass("row-label");
     var playSquare = square.clone().addClass("play-square");
     board.append(square.clone());
-    appendMultiple(board, colLabelSqure, 10);
+    appendMultiple(colLabelSqure, board, 10);
     for (var i = 0; i < 10; i++) {
         board.append(rowLabelSquare.clone());
-        appendMultiple(board, playSquare, 10);
+        appendMultiple(playSquare, board, 10);
     }
     board.find(".col-label").each(function (index) {
         $(this).append($("<p>").text(colArr[index]));
@@ -54,7 +54,12 @@ function generateBoard(rows, cols) {
         var numCoord = colArr[Math.floor(index / 10)];
         var abcCoord = rowArr[index % 10];
         this.setAttribute("data-coord", abcCoord + numCoord);
+
         $(this).on("click", function () {
+            if (boat) {
+                console.log("boat!");
+
+            }
             // $.post("/api/"+this.dataset.coord, function(res) {
             //     console.log(res);
             // });
@@ -62,6 +67,48 @@ function generateBoard(rows, cols) {
     });
     return board;
 }
-$(document).ready(function() {
-    $("body").append(generateBoard(10,10));
+var boat = false;
+var boatLength = 4;
+$(document).ready(function () {
+    $("body").append(generateBoard(10, 10));
+    var btn = $("<button type='button' class='btn btn-primary'>").text("button");
+    btn.on("click", function () {
+        boat = !boat;
+    });
+    var div = $("<div>").addClass("button-div");
+    div.append(btn);
+    $("body").append(div);
+    $(".play-square").hover(function (e) {
+        var arr = $(".play-square");
+        var index = arr.index(this);
+        if (boat) {
+            if (index < 100 - (boatLength - 1) * 10) {
+                arr = arr.slice(index, index + 40);
+                arr.splice(1, 9);
+                arr.splice(2, 9);
+                arr.splice(3, 9);
+                arr.splice(4, 9);
+                $(arr).css("background-color", function () {
+                    if (e.type === "mouseenter") {
+                        return "rgb(30,30,150,0.4)";
+                    } else if (e.type === "mouseleave") {
+                        return "lightgray";
+                    }
+                });
+            } else {
+                
+            }
+        } else {
+            if (index % 10 <= 10 - boatLength) {
+                $(arr.slice(index, index + 4)).css("background-color", function () {
+                    if (e.type === "mouseenter") {
+                        return "rgb(30,30,150,0.4)";
+                    } else if (e.type === "mouseleave") {
+                        return "lightgray";
+                    }
+                });
+            }
+        }
+    });
+
 });
