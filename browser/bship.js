@@ -62,3 +62,6 @@ function generateBoard(rows, cols) {
     });
     return board;
 }
+$(document).ready(function() {
+    $("body").append(generateBoard(10,10));
+});

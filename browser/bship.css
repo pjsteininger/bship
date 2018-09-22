@@ -18,6 +18,10 @@
     background-color: lightgray;
 }
 
+.play-square:hover {
+    background-color: rgba(150, 20, 20, .3);
+}
+
 .board {
     display: grid;
     margin: auto;
