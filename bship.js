@@ -1,5 +1,5 @@
 const inquirer = require("inquirer");
-const colors = require("colors");
+//const colors = require("colors");
 var colArr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 var rowArr = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 //***************
@@ -8,6 +8,12 @@ var rowArr = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 //              *
 //***************/
 
+
+var coordToIndex = function(coord) {
+    var alpha = coord.charAt(0);
+    var num = coord.slice(1);
+    console.log(alpha, num);
+}
 
 /**
  * @description Creates a new player with name, board, and boats
@@ -258,11 +264,11 @@ var continueGame = function () {
 // console.log(philBoard);
 
 //var board = Array(cols).fill(new Array(rows).fill(0));
-console.log("something".green);
-inquirer.prompt([{
-    type: "input",
-    name: "response",
-    message: "What is your name?"
-}]).then(answer => newGame(answer.response));
+// console.log("something".green);
+// inquirer.prompt([{
+//     type: "input",
+//     name: "response",
+//     message: "What is your name?"
+// }]).then(answer => newGame(answer.response));
 
 

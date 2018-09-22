@@ -6,6 +6,78 @@ $(document).ready(function () {
 
     var colArr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
     var rowArr = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+    /**
+    * @description creates and returns a game board with specified number of rows and columns and dimensions of individual squares.
+    * @param {number} numRows number of rows in the game board
+    * @param {number} numCols number of columns in the game board
+    * @param {number} size the length and width of each individual square measured in px
+    * @returns {object} <div> jquery object 
+    */
+    var createBoard = function (numRows, numCols, size) {
+        var board = $("<div>").attr("class", "grid-container");
+        board.css({
+            "display": "grid",
+            "background-color": "darkgray",
+            "grid-column-gap": "2px",
+            "grid-row-gap": "2px"
+        })
+
+        var colLabels = $("<div>");
+        colLabels.css({
+            position: "relative",
+            height: size + "px",
+            width: (size * numCols) + "px"
+        });
+
+        var rowLabels = $("<div>");
+        rowLabels.css({
+            position: "relative",
+            height: (size * numRows) + "px",
+            width: size + "px"
+        });
+
+        for (var i = 0; i < numRows; i++) {
+            rowLabels.append(labelSquare.clone());
+        }
+        for (var i = 0; i < numCols; i++) {
+            colLabels.append(labelSquare.clone());
+        }
+
+        var playArea = $("<div>");
+        playArea.css({
+            position: "relative",
+            height: numRows * size + "px",
+            width: numCols * size + "px"
+        });
+
+        var playRow = $("<div>");
+        playRow.css({
+            position: "relative",
+            height: size + "px",
+            width: size * numCols + "px"
+        });
+
+        var playSquare = $("<div>");
+        playSquare.css({
+            height: (size - 2) + "px",
+            width: (size - 2) + "px",
+            background: "lightgray",
+            position: "relative",
+            border: "1px solid darkgray",
+            display: "inline-block"
+        });
+
+        for (var i = 0; i < numCols; i++) {
+            playRow.append(playSquare.clone());
+        }
+        for (var i = 0; i < numRows; i++) {
+            playArea.append(playRow.clone());
+        }
+        board.append(colLabels, rowLabels, playArea);
+        return board;
+    }
+
+
     var board1 = $("<div>").css({
         position: "absolute",
         left: "100px",
@@ -94,7 +166,7 @@ $(document).ready(function () {
     //     rowLabels.append(labelDiv);
     // }
 
-    
+
     // var colLabels = $("<div>").css({
     //     position: "relative"
     // });
