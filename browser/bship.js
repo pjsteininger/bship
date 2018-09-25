@@ -51,10 +51,13 @@ function generateBoard(rows, cols) {
         $(this).append($("<p>").text(rowArr[index]));
     });
     board.find(".play-square").each(function (index, element) {
-        var numCoord = colArr[Math.floor(index / 10)];
-        var abcCoord = rowArr[index % 10];
+        var abcCoord = rowArr[Math.floor(index / 10)];
+        var numCoord = colArr[index % 10];
+        this.setAttribute("data-row", abcCoord);
+        this.setAttribute("data-col", numCoord);
+        this.setAttribute("data-rowindex", Math.floor(index / 10));
+        this.setAttribute("data-colindex", index % 10);
         this.setAttribute("data-coord", abcCoord + numCoord);
-
         $(this).on("click", function () {
             if (boat) {
                 console.log("boat!");
@@ -67,10 +70,36 @@ function generateBoard(rows, cols) {
     });
     return board;
 }
-var boat = false;
-var boatLength = 4;
+var boat;
+
+
 $(document).ready(function () {
-    $("body").append(generateBoard(10, 10));
+    var boatLength = 5;
+    var boatOrientation = 0;
+    document.addEventListener("wheel", function (event) {
+        if (event.deltaY > 0) {
+            boatOrientation += 1;
+            if (boatOrientation > 3) {
+                boatOrientation = 0;
+            }
+        } else if (event.deltaY < 0) {
+            boatOrientation -= 1;
+            if (boatOrientation < 0) {
+                boatOrientation = 3;
+            }
+        }
+    });
+
+
+    // $("body").on("click", "[data-row='b']", function () {
+    //     console.log(true);
+    //     $(this).css("background-color", "black");
+    // });
+    $("body").append("<div>").attr("id","game");
+    $("#game").append(generateBoard(10, 10));
+    $("#game").append($("<div>").addClass("msg-box"));
+    $(".msg-box").text("your moves | cpu moves");
+    $("#game").append(generateBoard(10, 10));
     var btn = $("<button type='button' class='btn btn-primary'>").text("button");
     btn.on("click", function () {
         boat = !boat;
@@ -78,37 +107,95 @@ $(document).ready(function () {
     var div = $("<div>").addClass("button-div");
     div.append(btn);
     $("body").append(div);
-    $(".play-square").hover(function (e) {
-        var arr = $(".play-square");
-        var index = arr.index(this);
-        if (boat) {
-            if (index < 100 - (boatLength - 1) * 10) {
-                arr = arr.slice(index, index + 40);
-                arr.splice(1, 9);
-                arr.splice(2, 9);
-                arr.splice(3, 9);
-                arr.splice(4, 9);
-                $(arr).css("background-color", function () {
-                    if (e.type === "mouseenter") {
-                        return "rgb(30,30,150,0.4)";
-                    } else if (e.type === "mouseleave") {
-                        return "lightgray";
-                    }
-                });
-            } else {
-                
-            }
-        } else {
-            if (index % 10 <= 10 - boatLength) {
-                $(arr.slice(index, index + 4)).css("background-color", function () {
-                    if (e.type === "mouseenter") {
-                        return "rgb(30,30,150,0.4)";
-                    } else if (e.type === "mouseleave") {
-                        return "lightgray";
-                    }
-                });
+    // $("body").on("click", ".play-square", function () {
+    //     sendBoatCoord(this.dataset.coord);
+    // });
+    function hoverSquares(obj, color) {
+        for (var i = 0; i < boatLength; i++) {
+            if (boatOrientation === 0) {
+                if (parseInt(obj.dataset.colindex) + boatLength <= 10) {
+                    console.log();
+                    $("[data-colindex=" + (parseInt(obj.dataset.colindex) + i) + "][data-rowindex=" + obj.dataset.rowindex + "]").css("background-color", color);
+                }
+            } else if (boatOrientation === 1) {
+                //boat going up
+                if (parseInt(obj.dataset.rowindex) - boatLength > 0) {
+                    console.log();
+                    $("[data-colindex=" + parseInt(obj.dataset.colindex) + "][data-rowindex=" + parseInt(obj.dataset.rowindex) - i + "]").css("background-color", color);
+                }
+            } else if (boatOrientation === 2) {
+                //boat going left
+                if (parseInt(obj.dataset.colindex) - boatLength > 0) {
+                    console.log();
+                    $("[data-colindex=" + (parseInt(obj.dataset.colindex) - i) + "][data-rowindex=" + obj.dataset.rowindex + "]").css("background-color", color);
+                }
+            } else if (boatOrientation === 3) {
+                //boat going down
+                if (parseInt(obj.dataset.rowindex) - boatLength > 0) {
+                    console.log();
+                    $("[data-colindex=" + parseInt(obj.dataset.colindex) + "][data-rowindex=" + parseInt(obj.dataset.rowindex) + i + "]").css("background-color", color);
+                }
             }
         }
+    }
+
+    $(".play-square").on("mouseenter", function () {
+        //hoverSquares(this, "rgba(80,80,150,0.3)")
     });
+
+    //console.log(this.dataset.coord);  
+    //$("[data-coord="+this.dataset.coord+"]").css("background-color", "blue");
+
+    //$(this).css("background-color", "rgb(220,240,220)");
+
+    $(".play-square").on("mouseleave", function () {
+        //same stuff as mouseenter but change it to light gray
+    });
+
+
+    // $(".play-square").on("mouseenter", function () {
+    //     if (boatOrientation === 0) {
+    //         //console.log(this.dataset.coord);
+    //         //$("[data-coord="+this.dataset.coord+"]").css("background-color", "blue");
+    //     }
+    //     //$(this).css("background-color", "rgb(220,240,220)");
+    // });
+    // $(".play-square").on("wheel", function () {
+    //     $(this).css("background-color", "rgb(220,240,220)");
+    // });
+    // $(".play-square").on("mouseleave", function () {
+    //     $(this).css("background-color", "lightgray");
+    // })
+    // var arr = $(".play-square");
+    // var index = arr.index(this);
+    // if (boatOrientation) {
+    //     if (index < 100 - (boatLength - 1) * 10) {
+    //         arr = arr.slice(index, index + 40);
+    //         arr.splice(1, 9);
+    //         arr.splice(2, 9);
+    //         arr.splice(3, 9);
+    //         arr.splice(4, 9);
+    //         $(arr).css("background-color", function () {
+    //             if (e.type === "mouseenter") {
+    //                 return "rgb(30,30,150,0.4)";
+    //             } else if (e.type === "mouseleave") {
+    //                 return "lightgray";
+    //             }
+    //         });
+    //     } else {
+
+    //     }
+    // } else {
+    //     if (index % 10 <= 10 - boatLength) {
+    //         $(arr.slice(index, index + 4)).css("background-color", function () {
+    //             if (e.type === "mouseenter") {
+    //                 return "rgb(30,30,150,0.4)";
+    //             } else if (e.type === "mouseleave") {
+    //                 return "lightgray";
+    //             }
+    //         });
+    //     }
+    // }
+
 
 });
