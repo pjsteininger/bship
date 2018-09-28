@@ -273,18 +273,26 @@ var nArr = numArr(10);
 console.log(aArr, nArr);
 console.log(cpuCheckerboard);
 for (var i = 0; i < 10; i++) {
-  for (var j = 0; j < 5; j++) {
-    cpuCheckerboard.push(aArr[i] + nArr[j * 2 + i % 2]);
-  }
+    for (var j = 0; j < 5; j++) {
+        cpuCheckerboard.push(aArr[i] + nArr[j * 2 + i % 2]);
+    }
 }
 console.log(cpuCheckerboard);
 function rngCpu(arr) {
-  rng = Math.floor(Math.random()*arr.length);
-  someGuess = arr[rng];
-  arr.splice(rng, 1);
-  return someGuess
+    rng = Math.floor(Math.random() * arr.length);
+    someGuess = arr[rng];
+    arr.splice(rng, 1);
+    return someGuess
 }
 console.log(cpuCheckerboard);
 var g = rngCpu(cpuCheckerboard);
 console.log(g);
 console.log(cpuCheckerboard);
+
+cpuAllGuesses = [];
+for (var i = 0; i < 10; i++) {
+    for (var j = 0; j < 10; j++) {
+        cpuAllGuesses.push(aArr[i] + nArr[j]);
+    }
+}
+console.log(cpuAllGuesses);
