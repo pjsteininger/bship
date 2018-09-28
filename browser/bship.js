@@ -266,28 +266,28 @@ $(document).ready(function () {
 
 
 
-var cpuCheckerboard = []
+var cpuCheckerboard1 = []
 
 var aArr = alphArr(10);
 var nArr = numArr(10);
 console.log(aArr, nArr);
-console.log(cpuCheckerboard);
+console.log(cpuCheckerboard1);
 for (var i = 0; i < 10; i++) {
     for (var j = 0; j < 5; j++) {
-        cpuCheckerboard.push(aArr[i] + nArr[j * 2 + i % 2]);
+        cpuCheckerboard1.push(aArr[i] + nArr[j * 2 + i % 2]);
     }
 }
-console.log(cpuCheckerboard);
+console.log(cpuCheckerboard1);
 function rngCpu(arr) {
     rng = Math.floor(Math.random() * arr.length);
     someGuess = arr[rng];
     arr.splice(rng, 1);
     return someGuess
 }
-console.log(cpuCheckerboard);
-var g = rngCpu(cpuCheckerboard);
+console.log(cpuCheckerboard1);
+var g = rngCpu(cpuCheckerboard1);
 console.log(g);
-console.log(cpuCheckerboard);
+console.log(cpuCheckerboard1);
 
 cpuAllGuesses = [];
 for (var i = 0; i < 10; i++) {
@@ -296,3 +296,14 @@ for (var i = 0; i < 10; i++) {
     }
 }
 console.log(cpuAllGuesses);
+
+
+var cpuCheckerboard2 = []
+
+console.log(cpuCheckerboard2);
+for (var i = 0; i < 10; i++) {
+    for (var j = 0; j < 5; j++) {
+        cpuCheckerboard2.push(aArr[i] + nArr[j * 2 + (i + 1) % 2]);
+    }
+}
+console.log(cpuCheckerboard2);
